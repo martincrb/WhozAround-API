@@ -1,19 +1,21 @@
-var express = require('express');
-var app = express();
-var fs = require("fs");
+var express = require("express"),
+    app = express(),
+    bodyParser  = require("body-parser"),
+    methodOverride = require("method-override");
+    mongoose = require('mongoose');
 
-app.get('/listUsers', function (req, res) {
-   fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-       console.log( data );
-       res.end( data );
-   });
-})
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(methodOverride());
 
-var server = app.listen(8081, function () {
+var router = express.Router();
 
-  var host = server.address().address
-  var port = server.address().port
+router.get('/', function(req, res) {
+   res.send("Hello World!");
+});
 
-  console.log("Example app listening at http://%s:%s", host, port)
+app.use(router);
 
-})
+app.listen(3000, function() {
+  console.log("Node server running on http://localhost:3000");
+});
