@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 
 var router = express.Router();
-mongoose.connect('mongodb://localhost/users');
+mongoose.connect('mongodb://localhost/usersTest');
 
 var tripSchema = mongoose.Schema({
   date_from: {type: Date},
