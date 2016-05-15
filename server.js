@@ -120,7 +120,7 @@ router.get('/whozapi/v1/users/:username', function(req, res) {
 
 //Get trips of the user with username :username
 router.get('/whozapi/v1/users/:username/trips', function(req, res) {
-  User.find({'fb_username' : req.params.username}, function (err, docs) {
+  Trip.find({'creator': req.params.username}, function (err, docs) {
     if (err) {
       res.send(err);
     }
@@ -131,7 +131,9 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
 
 //Create a trip for the user with id :id
 router.post('/whozapi/v1/users/:id/trips', function(req, res) {
-
+  var trip_req =req.body;
+  console.log(trip_req);
+  calls_log.log('info', "POST@/whozapi/v1/users/"+trip_req.creator+"/trips (" + trip_req.location+" "+trip_req.date+")");
 });
 
 //Get friends of the user with id :id
