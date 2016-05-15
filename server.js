@@ -156,7 +156,7 @@ router.post('/whozapi/v1/users/:username/friends', function(req, res) {
 app.post('/whozapi/v1/users',function(req,res){
   var user =req.body;
   console.log(user);
-  calls_log.log('call', "POST@/whozapi/v1/users (" + user + ")");
+  calls_log.log('info', "POST@/whozapi/v1/users (" + user + ")");
   //Parse user to user model
   var user_model = new User({fb_username: user.fb_username,
                               gcm_token: user.gcm_token,
