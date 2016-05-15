@@ -28,6 +28,9 @@ var userSchema = mongoose.Schema({
     gcm_token: String,
     name: String,
     surname: String,
+    age: String,
+    gender: String,
+    email: String,
     friends: [String]
 });
 
@@ -137,13 +140,13 @@ router.post('/whozapi/v1/users/:username/friends', function(req, res) {
 //Creates a new user
 app.post('/whozapi/v1/users',function(req,res){
   var user =req.body;
+  console.log(user);
   var user_model = new User({fb_username: user.fb_username,
                               gcm_token: user.gcm_token,
                             name: user.name,
                           surname: user.surname});
-  console.log(user);
-  console.log(req.body.user);
-  res.send(user_model.name);
+
+  res.send(req.body);
 });
 
 
