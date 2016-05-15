@@ -154,22 +154,52 @@ router.post('/whozapi/v1/users/:username/friends', function(req, res) {
 
 //Creates a new user
 app.post('/whozapi/v1/users',function(req,res){
-  var user =req.body;
-  console.log(user);
-  calls_log.log('info', "POST@/whozapi/v1/users (" + user + ")");
+  var user_req =req.body;
+  console.log(user_req);
+  var response = {"status": "OK", "message": "User added succesfully"};
+  calls_log.log('info', "POST@/whozapi/v1/users (" + user_req.facebook_username + ")");
   //Parse user to user model
-  var user_model = new User({fb_username: user.fb_username,
-                              gcm_token: user.gcm_token,
-                            name: user.name,
-                          surname: user.surname});
-  //If new user (NOT IN DB)
+  var user = new User({fb_username: user_req.facebook_username,
+                          gcm_token: user_req.gcmToken,
+                          name: user_req.name,
+                          surname: user_req.surname,
+                          hometown: user_req.hometown,
+                          gender: user_req.gender,
+                          age: user_req.age,
+                          email: user_req.email});
+  //Check if user exists in DB: Use FIND instead of FINDONE for better perfo
+  //https://blog.serverdensity.com/checking-if-a-document-exists-mongodb-slow-findone-vs-find/
+  User.find({'fb_username' : user.fb_username}, function (err, docs) {
+    if (err) {
+      calls_log.log('info', "MONGODB Error: " + err);
+    }
+    else {
+      if (docs.length > 0) { //User exists
+        calls_log.log('info', "User "+user.fb_username+" already in the database");
+        response.message = "User "+user.fb_username+" already in the database";
+      }
+      else { //User does not exist
+        user.save(function (err) {
+          if (err) {
+            calls_log.log('info', "Error adding user "+user.fb_username+": " + err);
+            response.message = "Error adding user "+user.fb_username+": " + err;
+            return console.error(err);
+          }
+          calls_log.log('info', "User "+user.fb_username+" added successfully" );
+          response.message = "User "+user.fb_username+" added succesfully";
+        });
+      }
+    }
+
+  }
+  //If new user (NOT IN DB) Add user to DB
 
 
 
   //If user already in DB:
 
 
-  res.send(req.body);
+  res.send(response);
 });
 
 
