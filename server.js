@@ -28,7 +28,9 @@ var tripSchema = mongoose.Schema({
   city: String,
   description: String,
   image: String,
-  creator: String
+  creator: String,
+  title: String,
+  isFb: Boolean
 });
 
 var userSchema = mongoose.Schema({
@@ -94,13 +96,13 @@ router.get('/calls_log', function(req, res) {
 
 //Get users
 router.get('/whozapi/v1/users', function(req, res) {
-  calls_log.log('call', "GET@/whozapi/v1/users (" + req + ")");
+  calls_log.log('info', "GET@/whozapi/v1/users (" + req + ")");
   User.find({}, function (err, docs) {
     if (err) {
-      calls_log.log('result', "GET@/whozapi/v1/users (" + err + ")");
+      calls_log.log('info', "GET@/whozapi/v1/users (" + err + ")");
       res.send(err);
     }
-    calls_log.log('result', "GET@/whozapi/v1/users (" + docs + ")");
+    calls_log.log('info', "GET@/whozapi/v1/users (" + docs + ")");
     res.json(docs);
 
   });
@@ -109,8 +111,10 @@ router.get('/whozapi/v1/users', function(req, res) {
 
 //Get user with username :username
 router.get('/whozapi/v1/users/:username', function(req, res) {
+  calls_log.log('info', "GET@/whozapi/v1/users/"+req.params.username);
   User.find({'fb_username' : req.params.username}, function (err, docs) {
     if (err) {
+      calls_log.log('info', "Error retrieving user");
       res.send(err);
     }
     res.json(docs);
@@ -120,10 +124,12 @@ router.get('/whozapi/v1/users/:username', function(req, res) {
 
 //Get trips of the user with username :username
 router.get('/whozapi/v1/users/:username/trips', function(req, res) {
+  calls_log.log('info', "GET@/whozapi/v1/users/"+req.params.username+"/trips");
   Trip.find({'creator': req.params.username}, function (err, docs) {
     if (err) {
       res.send(err);
     }
+    console.log(docs);
     res.json(docs);
 
   });
@@ -133,7 +139,43 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
 router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   var trip_req =req.body;
   console.log(trip_req);
+  var response = {"status": "OK", "message": "Trip added succesfully"};
   calls_log.log('info', "POST@/whozapi/v1/users/"+trip_req.creator+"/trips (" + trip_req.location+" "+trip_req.date+")");
+  //Parse trip data and add TRIP to database
+  /*  var tripSchema = mongoose.Schema({
+      date_from: {type: Date},
+      date_until: {type: Date},
+      city: String,
+      description: String,
+      image: String,
+      creator: String,
+      title: String,
+      isFb: Boolean
+    });
+  */
+  var trip = new Trip(
+    {
+        date_from:  trip_req.date,
+        date_until: trip_req.date2,
+        city:       trip_req.location,
+        description:  trip_req.description,
+        image: trip_req.image_url,
+        creator: trip_req.creator,
+        title: trip_req.title,
+        isFb: trip_req.isFb
+    }
+  );
+//Add trip to DB
+  trip.save(function (err) {
+    if (err) {
+      calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
+      response.message = "Error adding trip to user "+trip_req.creator+": " + err;
+      return console.error(err);
+    }
+    calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
+    response.message = "User "+trip_req.creator+" added the trip succesfully";
+  });
+  res.send(response);
 });
 
 //Get friends of the user with id :id
@@ -145,6 +187,7 @@ router.get('/whozapi/v1/users/:username/friends', function(req, res) {
     res.json(docs);
 
   });
+
 });
 
 //Add friend to the user with id :id
