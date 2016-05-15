@@ -158,12 +158,12 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   */
   var trip = new Trip(
     {
-        date_from:  trip_req.date,
-        date_until: trip_req.date2,
+        date_from:  trip_req.date_from,
+        date_until: trip_req.date_until,
         city:       trip_req.location,
         description:  trip_req.description,
         image_url: trip_req.image_url ,
-        image: 0,
+        image: trip_req.image,
         creator: trip_req.creator,
         title: trip_req.title,
         isFb: trip_req.isFb
