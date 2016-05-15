@@ -163,7 +163,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         city:       trip_req.location,
         description:  trip_req.description,
         image_url: trip_req.image_url ,
-        image: -1,
+        image: 0,
         creator: trip_req.creator,
         title: trip_req.title,
         isFb: trip_req.isFb
