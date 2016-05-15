@@ -127,9 +127,10 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
   calls_log.log('info', "GET@/whozapi/v1/users/"+req.params.username+"/trips");
   Trip.find({'creator': req.params.username}, function (err, docs) {
     if (err) {
+      calls_log.log('info', "Something happened retrieving the trips of "+req.params.username+" Error: "+err);
       res.send(err);
     }
-    console.log(docs);
+    console.log(json(docs);
     res.json(docs);
 
   });
