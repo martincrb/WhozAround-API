@@ -2,7 +2,16 @@ var express = require("express"),
     app = express(),
     bodyParser  = require("body-parser"),
     methodOverride = require("method-override");
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    winston = require('winston');
+
+//configure logger
+var calls_log = new (winston.Logger)({
+    transports: [
+      new (winston.transports.Console)(),
+      new (winston.transports.File)({ filename: 'logs/calls_log.log' })
+    ]
+});
 
 //Configure express to use bodyparser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -79,13 +88,19 @@ var me = new User({fb_username: 'martincristobal',
 router.get('/admin', function(req, res) {
    res.sendFile('/public/index.html' , {"root": __dirname});
 });
+router.get('/calls_log', function(req, res) {
+   res.sendFile('/logs/calls_log.log' , {"root": __dirname});
+});
 
 //Get users
 router.get('/whozapi/v1/users', function(req, res) {
+  calls_log.log('call', "GET@/whozapi/v1/users (" + req + ")");
   User.find({}, function (err, docs) {
     if (err) {
+      calls_log.log('result', "GET@/whozapi/v1/users (" + err + ")");
       res.send(err);
     }
+    calls_log.log('result', "GET@/whozapi/v1/users (" + docs + ")");
     res.json(docs);
 
   });
@@ -140,11 +155,18 @@ router.post('/whozapi/v1/users/:username/friends', function(req, res) {
 //Creates a new user
 app.post('/whozapi/v1/users',function(req,res){
   var user =req.body;
-  console.log(user);
+  calls_log.log('call', "POST@/whozapi/v1/users (" + user + ")");
+  //Parse user to user model
   var user_model = new User({fb_username: user.fb_username,
                               gcm_token: user.gcm_token,
                             name: user.name,
                           surname: user.surname});
+  //If new user (NOT IN DB)
+
+
+
+  //If user already in DB:
+
 
   res.send(req.body);
 });
@@ -153,5 +175,6 @@ app.post('/whozapi/v1/users',function(req,res){
 app.use(router);
 
 app.listen(3000, function() {
+  calls_log.log('info', "Node server running on http://localhost:3000");
   console.log("Node server running on http://localhost:3000");
 });
