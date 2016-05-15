@@ -23,11 +23,11 @@ var router = express.Router();
 mongoose.connect('mongodb://localhost/usersTest');
 
 var tripSchema = mongoose.Schema({
-  date_from: {type: Date},
-  date_until: {type: Date},
+  date_from: String,
+  date_until: String,
   city: String,
   description: String,
-  image: String,
+  image: Number,
   image_url: String,
   creator: String,
   title: String,
