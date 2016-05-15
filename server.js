@@ -179,11 +179,11 @@ app.post('/whozapi/v1/users',function(req,res){
         response.message = "User "+user.fb_username+" already in the database";
       }
       else { //User does not exist
-        user.save(function (err) {
-          if (err) {
-            calls_log.log('info', "Error adding user "+user.fb_username+": " + err);
-            response.message = "Error adding user "+user.fb_username+": " + err;
-            return console.error(err);
+        user.save(function (err2) {
+          if (err2) {
+            calls_log.log('info', "Error adding user "+user.fb_username+": " + err2);
+            response.message = "Error adding user "+user.fb_username+": " + err2;
+            return console.error(err2);
           }
           calls_log.log('info', "User "+user.fb_username+" added successfully" );
           response.message = "User "+user.fb_username+" added succesfully";
@@ -191,14 +191,7 @@ app.post('/whozapi/v1/users',function(req,res){
       }
     }
 
-  }
-  //If new user (NOT IN DB) Add user to DB
-
-
-
-  //If user already in DB:
-
-
+  });
   res.send(response);
 });
 
