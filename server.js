@@ -28,6 +28,7 @@ var tripSchema = mongoose.Schema({
   city: String,
   description: String,
   image: String,
+  image_url: String,
   creator: String,
   title: String,
   isFb: Boolean
@@ -161,7 +162,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         date_until: trip_req.date2,
         city:       trip_req.location,
         description:  trip_req.description,
-        image: trip_req.image_url,
+        image_url: trip_req.image_url ,
+        image: -1,
         creator: trip_req.creator,
         title: trip_req.title,
         isFb: trip_req.isFb
