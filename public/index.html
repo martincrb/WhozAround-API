@@ -13,10 +13,14 @@
   <h1>WHOZAROUND ADMIN PANEL</h1>
 
   <div ng-app="myApp" ng-controller="myCtrl">
-    {{users.length}}
+    <h2> Number of users: {{users.length}} </h2>
     <div ng-repeat="user in users">
-      Username: {{user.fb_username}}
+      <h3>Username: {{user.fb_username}}</h3>
     </div>
+  </div>
+  <div>
+    <h2> Log: </h2>
+    <iframe src="../logs/calls_log.log"></iframe>
   </div>
 
   <script>
