@@ -130,7 +130,7 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
       calls_log.log('info', "Something happened retrieving the trips of "+req.params.username+" Error: "+err);
       res.send(err);
     }
-    console.log(json(docs));
+    console.log(docs);
     res.json(docs);
 
   });
