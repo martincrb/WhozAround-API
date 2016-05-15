@@ -155,7 +155,8 @@ router.post('/whozapi/v1/users/:username/friends', function(req, res) {
 //Creates a new user
 app.post('/whozapi/v1/users',function(req,res){
   var user =req.body;
-  calls_log.log('call', "POST@/whozapi/v1/users (" + user + ")");
+  console.log(user);
+  //calls_log.log('call', "POST@/whozapi/v1/users (" + user + ")");
   //Parse user to user model
   var user_model = new User({fb_username: user.fb_username,
                               gcm_token: user.gcm_token,
@@ -176,5 +177,4 @@ app.use(router);
 
 app.listen(3000, function() {
   calls_log.log('info', "Node server running on http://localhost:3000");
-  console.log("Node server running on http://localhost:3000");
 });
