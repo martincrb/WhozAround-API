@@ -133,7 +133,16 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
     }
     calls_log.log('info', "Retrieving trips of "+req.params.username);
     docs.forEach(function(tr) {
+      console.log("Trip ------------------------------------------");
       console.log(tr.city);
+      console.log(tr.date_from);
+      console.log(tr.date_until);
+      console.log(tr.description);
+      console.log(tr.image);
+      console.log(tr.image_url);
+      console.log(tr.creator);
+      console.log(tr.title);
+      console.log(tr.isFb);
     });
     res.json(docs);
 
