@@ -226,7 +226,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         calls_log.log('info', "MONGODB Error: " + err);
       }
       else {
-        console.log(docs[0]);
+        console.log(json(docs[0]));
         notifyUser(docs[0], docs[0]);
       }
     });
