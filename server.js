@@ -79,6 +79,7 @@ function tripsMatch(trip1, trip2) {
 }
 
 function notifyFriends(user, newtrip) {
+  console.log("Entering notifyFriends");
   var friends = user.friends;
   for (var i = 0; i < friends.length; ++i) {
       var trips = getTripsByUser(friends[i].fb_username);
@@ -94,7 +95,7 @@ function notifyFriends(user, newtrip) {
 }
 
 function notifyUser(sender, receiver) {
-
+  console.log("Entering notifyUser")
   var message = new gcm.Message();
   message.addNotification({
     title: receiver.name+', we found a friend!',
@@ -170,6 +171,7 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
       res.send(err);
     }
     calls_log.log('info', "Retrieving trips of "+req.params.username);
+    /*
     docs.forEach(function(tr) {
       console.log("Trip ------------------------------------------");
       console.log(tr.city);
@@ -182,6 +184,7 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
       console.log(tr.title);
       console.log(tr.isFb);
     });
+    */
     res.json(docs);
 
   });
@@ -219,10 +222,10 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     //Notify friends with matching trips
     User.find({'fb_username' : trip_req.creator}, function (err, docs) {
       if (err) {
-      //  calls_log.log('info', "MONGODB Error: " + err);
+        calls_log.log('info', "MONGODB Error: " + err);
       }
       else {
-        //notifyUser(docs[0], trip);
+        notifyUser(docs[0], trip);
       }
     });
   });
