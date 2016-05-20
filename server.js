@@ -90,8 +90,7 @@ function notifyFriends(user, newtrip) {
 
       }
   }
-  //Testing notifyUser
-  notifyUser(user, user);
+
 }
 
 function notifyUser(sender, receiver) {
@@ -227,7 +226,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         calls_log.log('info', "MONGODB Error: " + err);
       }
       else {
-        notifyUser(docs[0], trip);
+        notifyUser(docs[0], docs[0]);
       }
     });
   });
