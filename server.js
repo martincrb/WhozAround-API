@@ -80,7 +80,8 @@ function getTripsByUser(fb_user) {
 }
 
 function tripsMatch(trip1, trip2) {
-  var dateMatch = trip2.date_from < trip1.date_until;
+  var dateMatch = stringToDate(trip1.date_from, "dd/mm/yyy") <= stringToDate(trip2.date_until, "dd/mm/yyy") &&
+    stringToDate(trip1.date_until, "dd/mm/yyy") >= stringToDate(trip2.date_from, "dd/mm/yyy");
   var placeMatch = trip1.city == trip2.city;
   return dateMatch && placeMatch;
 }
@@ -91,8 +92,8 @@ function notifyFriends(user, newtrip) {
   for (var i = 0; i < friends.length; ++i) {
       var trips = getTripsByUser(friends[i].fb_username);
       for (var j = 0; j < trips.length; ++j) {
-          if (tripsMatch(newtrip, trips[j])) {
-            notifyUser(originaluser, friends[i]);
+          if (tripsMatch(newtrip, trips[j].toObject())) {
+            notifyUser(user, friends[i]);
           }
 
       }
@@ -102,24 +103,31 @@ function notifyFriends(user, newtrip) {
 
 function notifyUser(sender, receiver) {
   console.log("Entering notifyUser")
-  var message = new gcm.Message();
-  message.addData({
-    title: receiver.name+', we found a friend!',
-    body: sender.name+' is also traveling to the same place as you!',
-    icon: 'ic_stat_logo'
-  });
-  var server = new gcm.Sender(gcm_server_token);
-  var regTokens = [];
-  console.log(receiver);
-  regTokens.push(receiver.gcmToken);
-  console.log("Adding "+receiver.gcmToken);
-  server.send(message, {registrationTokens: regTokens}, function(err, response) {
+  User.findOne({'fb_username' : receiver}, function (err, docs) {
     if (err) {
-      calls_log.log('info', "Notification to "+receiver.name+" from "+sender.name+" failed: "+err);
+      calls_log.log('info', "Error retrieving user");
     }
-    else {
-      calls_log.log('info', "Sending notification to "+receiver.name+" from "+sender.name);
-    }
+    var message = new gcm.Message();
+    var user2 = docs.toObject();
+    message.addData({
+      title: user2.name+', we found a friend!',
+      body: sender.name+' is also traveling to the same place as you!',
+      icon: 'ic_stat_logo'
+    });
+    var server = new gcm.Sender(gcm_server_token);
+    var regTokens = [];
+    console.log(receiver);
+    regTokens.push(user2.gcmToken);
+    console.log("Adding "+user2.gcmToken);
+    server.send(message, {registrationTokens: regTokens}, function(err, response) {
+      if (err) {
+        calls_log.log('info', "Notification to "+user2.name+" from "+sender.name+" failed: "+err);
+      }
+      else {
+        calls_log.log('info', "Sending notification to "+user2.name+" from "+sender.name);
+      }
+    });
+
   });
 }
 /*
@@ -241,16 +249,20 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
       }
       calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
       response.message = "User "+trip_req.creator+" added the trip succesfully";
+
       //Notify friends with matching trips
       User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
         if (err2) {
           calls_log.log('info', "MONGODB Error: " + err2);
         }
         else {
+
           console.log(JSON.stringify(docs[0]));
-          notifyUser(docs[0].toObject(), docs[0].toObject());
+          notifyFriends(docs[0].toObject(), trip);
         }
       });
+
+
     });
   });
   res.send(response);

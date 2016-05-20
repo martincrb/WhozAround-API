@@ -15,7 +15,7 @@
   <div ng-app="myApp" ng-controller="myCtrl">
     <h2> Number of users: {{users.length}} </h2>
     <div ng-repeat="user in users">
-      <h3>Username: {{user.fb_username}}</h3>
+      <h3>Username: {{user.name + " " + user.surname}}</h3>
     </div>
   </div>
   <div class="col-lg-12">
