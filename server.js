@@ -11,11 +11,10 @@ var gcm_server_token = 'AIzaSyCQ8jg3NTX5MzggS18dfimxV-P6TZ1hVbc';
 var flickr_key = '95455618ec4f4eab692d561bbae3b516';
 var flickr_secret= '211dd2af3ebe5701';
 
-var Flickr = require("flickrapi"),
-  flickrOptions = {
-    api_key: flickr_key,
-    secret: flickr_secret
-  };
+var Flickr = require("node-flickr");
+var keys = {"api_key": flickr_key };
+
+flickr = new Flickr(keys);
 
 var calls_log = new (winston.Logger)({
     transports: [
@@ -220,49 +219,39 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  Flickr.authenticate(flickrOptions, function(error, flickr) {
-    flickr.photos.search({
-      text: trip.city+"+image",
-      tags: trip.city
-    },
-    function(err0, result) {
-      if(err0) {
-        console.log(err0);
-        return;
+  flickr.get("photos.search", {"tags":trip.city}, function(err0, result){
+    if (err0) return console.error(err0);
+    console.log(result.photos);
+    //Build URL
+    var maximum = result.photos.total;
+    var minimum = 0;
+    var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+    var photo = result.photos.photo[0]; //First photo
+    //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+    var farmid = 1;
+    var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
+    trip.image_url = url;
+    console.log("URL: " +url);
+    trip.save(function (err) {
+      if (err) {
+        calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
+        response.message = "Error adding trip to user "+trip_req.creator+": " + err;
+        return console.error(err);
       }
-        //Build URL
-        var maximum = result.photos.total;
-        var minimum = 0;
-        var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-        var photo = result.photos.photo[0]; //First photo
-        //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
-        var farmid = 1;
-        var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
-        trip.image_url = url;
-        console.log("URL: " +url);
-        trip.save(function (err) {
-          if (err) {
-            calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
-            response.message = "Error adding trip to user "+trip_req.creator+": " + err;
-            return console.error(err);
-          }
-          calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
-          response.message = "User "+trip_req.creator+" added the trip succesfully";
-          //Notify friends with matching trips
-          User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
-            if (err2) {
-              calls_log.log('info', "MONGODB Error: " + err2);
-            }
-            else {
-              console.log(JSON.stringify(docs[0]));
-              notifyUser(docs[0].toObject(), docs[0].toObject());
-            }
-          });
-        });
+      calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
+      response.message = "User "+trip_req.creator+" added the trip succesfully";
+      //Notify friends with matching trips
+      User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
+        if (err2) {
+          calls_log.log('info', "MONGODB Error: " + err2);
+        }
+        else {
+          console.log(JSON.stringify(docs[0]));
+          notifyUser(docs[0].toObject(), docs[0].toObject());
+        }
       });
     });
-//Add trip to DB
-
+  });
   res.send(response);
 });
 
