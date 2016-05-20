@@ -219,7 +219,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  console.log("TAGS: "+ trip.city+",city")
+  console.log("TAGS: "+ trip.city+",city,landscape,monument")
   flickr.get("photos.search", {"tags":trip.city+",city"}, function(err0, result){
     if (err0) return console.error(err0);
     console.log(result.photos);
