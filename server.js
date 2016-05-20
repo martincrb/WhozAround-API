@@ -40,7 +40,7 @@ var tripSchema = mongoose.Schema({
 var userSchema = mongoose.Schema({
     fb_username: String,
     hometown: String,
-    gcm_token: String,
+    gcmToken: String,
     name: String,
     surname: String,
     age: String,
@@ -117,7 +117,7 @@ function notifyUser(sender, receiver) {
 }
 /*
 var me = new User({fb_username: 'martincristobal',
-                  gcm_token: '21414114',
+                  gcmToken: '21414114',
                   name: 'Martín',
                   surname: 'Cristóbal'});
 */
@@ -153,7 +153,7 @@ router.get('/whozapi/v1/users', function(req, res) {
 //Get user with username :username
 router.get('/whozapi/v1/users/:username', function(req, res) {
   calls_log.log('info', "GET@/whozapi/v1/users/"+req.params.username);
-  User.find({'fb_username' : req.params.username}, function (err, docs) {
+  User.findOne({'fb_username' : req.params.username}, function (err, docs) {
     if (err) {
       calls_log.log('info', "Error retrieving user");
       res.send(err);
@@ -227,7 +227,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
       }
       else {
         console.log(JSON.stringify(docs[0]));
-        notifyUser(docs[0], docs[0]);
+        notifyUser(docs[0].toObject(), docs[0].toObject());
       }
     });
   });
@@ -261,7 +261,7 @@ app.post('/whozapi/v1/users',function(req,res){
   calls_log.log('info', "POST@/whozapi/v1/users (" + user_req.facebook_username + ")");
   //Parse user to user model
   var user = new User({fb_username: user_req.facebook_username,
-                          gcm_token: user_req.gcmToken,
+                          gcmToken: user_req.gcmToken,
                           name: user_req.name,
                           surname: user_req.surname,
                           hometown: user_req.hometown,
@@ -279,7 +279,7 @@ app.post('/whozapi/v1/users',function(req,res){
         calls_log.log('info', "User "+user.fb_username+" already in the database");
         response.message = "User "+user.fb_username+" already in the database";
         //Update gcm token
-        var conditions = {fb_username: user.fb_username}, update={$set: {gcm_token: user.gcmToken}};
+        var conditions = {fb_username: user.fb_username}, update={$set: {gcmToken: user.gcmToken}};
         User.update(conditions, update, {multi: false}, function(err, numAffected) {
           if (err) {
             console.log("Error updating gcm");
