@@ -260,7 +260,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         }
         else {
           console.log(JSON.stringify(docs));
-          notifyFriends(docs.toObject(), trip);
+          notifyFriends(docs, trip);
         }
       });
 
