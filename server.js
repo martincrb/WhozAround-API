@@ -59,28 +59,6 @@ var userSchema = mongoose.Schema({
 var User = mongoose.model('User', userSchema);
 var Trip = mongoose.model('Trip', tripSchema);
 
-var adri = 'cxPFp7DT23g:APA91bHrxr0KNfuVOUe_QvOpNoR7omQgPC0fwhIHGKLtvo7Outais8smrMb46lQuIE7ty19GIUQj7K_jo0V0Ui_KftktHoReGzJ5cj8usnIaNgfUYH7SwBBMkKaqnpmwPuAJhZTVSm2g';
-var me = 'fUvdZ2hmqHI:APA91bEivy64iIdTre_lc4r0p9CaYZUOGUw7zhOGMl4YZgb1kfpaqE0x1UqwdkPlJGZ5VpBBImzBxljW_DyLQdn_G4_7RbOSVOr2qD-1IEp-Vxjj8Jfp9tjUvW84cGYedstZ_YSvK8-l'
-var message = new gcm.Message();
-message.addData({
-  title: 'Sida TETE',
-  body: 'bu',
-  icon: 'ic_stat_logo'
-});
-var server = new gcm.Sender(gcm_server_token);
-var regTokens = [];
-
-regTokens.push(adri);
-regTokens.push(me);
-console.log("Adding "+adri);
-server.send(message, {registrationTokens: regTokens}, function(err, response) {
-  if (err) {
-    calls_log.log('info', "Notification to "+adri+" from "+"me"+" failed: "+err);
-  }
-  else {
-    calls_log.log('info', "Sending notification to "+"adri"+" from "+"me");
-  }
-});
 function stringToDate(_date,_format,_delimiter)
 {
             var formatLowerCase=_format.toLowerCase();
@@ -111,11 +89,13 @@ function tripsMatch(trip1, trip2) {
 function notifyFriends(user, newtrip) {
   console.log("Entering notifyFriends");
   var friends = user.friends;
+  console.log(friends);
   for (var i = 0; i < friends.length; ++i) {
+
       var trips = getTripsByUser(friends[i].fb_username);
       for (var j = 0; j < trips.length; ++j) {
           if (tripsMatch(newtrip, trips[j].toObject())) {
-            notifyUser(user, friends[i]);
+            //notifyUser(user, friends[i]);
           }
 
       }
