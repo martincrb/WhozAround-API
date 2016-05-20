@@ -94,7 +94,7 @@ function notifyFriends(user, newtrip) {
 }
 
 function notifyUser(sender, receiver) {
-  /*
+
   var message = new gcm.Message();
   message.addNotification({
     title: receiver.name+', we found a friend!',
@@ -112,7 +112,6 @@ function notifyUser(sender, receiver) {
       calls_log('info', "Sending notification to "+receiver.name+" from "+sender.name);
     }
   });
-  */
 }
 /*
 var me = new User({fb_username: 'martincristobal',
@@ -129,6 +128,7 @@ var me = new User({fb_username: 'martincristobal',
 router.get('/admin', function(req, res) {
    res.sendFile('/public/index.html' , {"root": __dirname});
 });
+
 router.get('/calls_log', function(req, res) {
    res.sendFile('/logs/calls_log.log' , {"root": __dirname});
 });
@@ -194,17 +194,6 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   var response = {"status": "OK", "message": "Trip added succesfully"};
   calls_log.log('info', "POST@/whozapi/v1/users/"+trip_req.creator+"/trips (" + trip_req.location+" "+trip_req.date+")");
   //Parse trip data and add TRIP to database
-  /*  var tripSchema = mongoose.Schema({
-      date_from: {type: Date},
-      date_until: {type: Date},
-      city: String,
-      description: String,
-      image: String,
-      creator: String,
-      title: String,
-      isFb: Boolean
-    });
-  */
   var trip = new Trip(
     {
         date_from:  stringToDate(trip_req.date_from, "mm/dd/yyy", "/"),
@@ -227,14 +216,13 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
     calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
     response.message = "User "+trip_req.creator+" added the trip succesfully";
-
     //Notify friends with matching trips
-    User.findOne({'fb_username' : trip_req.creator}, function (err, docs) {
+    User.find({'fb_username' : trip_req.creator}, function (err, docs) {
       if (err) {
         calls_log.log('info', "MONGODB Error: " + err);
       }
       else {
-        notifyUser(docs, trip);
+        //notifyUser(docs[0], trip);
       }
   });
   res.send(response);
