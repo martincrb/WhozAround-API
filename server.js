@@ -303,6 +303,7 @@ app.post('/whozapi/v1/users',function(req,res){
                           hometown: user_req.hometown,
                           gender: user_req.gender,
                           age: user_req.age,
+                          friends: user_req.friends,
                           email: user_req.email});
   //Check if user exists in DB: Use FIND instead of FINDONE for better perfo
   //https://blog.serverdensity.com/checking-if-a-document-exists-mongodb-slow-findone-vs-find/
@@ -315,13 +316,13 @@ app.post('/whozapi/v1/users',function(req,res){
         calls_log.log('info', "User "+user.fb_username+" already in the database");
         response.message = "User "+user.fb_username+" already in the database";
         //Update gcm token
-        var conditions = {fb_username: user.fb_username}, update={$set: {gcmToken: user.gcmToken}};
+        var conditions = {fb_username: user.fb_username}, update={$set: {gcmToken: user.gcmToken, friends: user.friends}};
         User.update(conditions, update, {multi: false}, function(err, numAffected) {
           if (err) {
             console.log("Error updating gcm");
           }
           else {
-            console.log(numAffected+ " users affected");
+            console.log(numAffected.toObject()+ " users affected");
           }
         });
       }
