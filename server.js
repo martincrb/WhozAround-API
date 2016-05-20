@@ -35,7 +35,7 @@ mongoose.connect('mongodb://localhost/usersTest');
 var tripSchema = mongoose.Schema({
   date_from: Date,
   date_until: Date,
-  city: String,
+  location: String,
   description: String,
   image: Number,
   image_url: String,
@@ -209,7 +209,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     {
         date_from:  stringToDate(trip_req.date_from, "mm/dd/yyy", "/"),
         date_until: stringToDate(trip_req.date_until, "mm/dd/yyy", "/"),
-        city:       trip_req.location,
+        location:       trip_req.location,
         description:  trip_req.description,
         image_url: trip_req.image_url ,
         image: trip_req.image,
@@ -219,7 +219,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  flickr.get("photos.search", {"tags":"cat,dogs"}, function(err0, result){
+  console.log("TAGS: "+ trip.location+",city")
+  flickr.get("photos.search", {"tags":trip.location+",city"}, function(err0, result){
     if (err0) return console.error(err0);
     console.log(result.photos);
     //Build URL
