@@ -11,11 +11,10 @@ var gcm_server_token = 'AIzaSyCQ8jg3NTX5MzggS18dfimxV-P6TZ1hVbc';
 var flickr_key = '95455618ec4f4eab692d561bbae3b516';
 var flickr_secret= '211dd2af3ebe5701';
 
-var Flickr = require("flickrapi"),
-  flickrOptions = {
-    api_key: flickr_key,
-    secret: flickr_secret
-  };
+var flickr = new Flickr({
+  api_key: flickr_key
+});
+
 
 var calls_log = new (winston.Logger)({
     transports: [
@@ -220,7 +219,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  Flickr.photos.search({
+  flickr.photos.search({
     text: trip.city +"+"+trip.description.replace(" ", "+")
   },
   function(err0, result) {
