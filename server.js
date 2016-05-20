@@ -220,7 +220,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  flickr.photos.search({
+  Flickr.photos.search({
     text: trip.city +"+"+trip.description.replace(" ", "+")
   },
   function(err0, result) {
