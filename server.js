@@ -59,6 +59,26 @@ var userSchema = mongoose.Schema({
 var User = mongoose.model('User', userSchema);
 var Trip = mongoose.model('Trip', tripSchema);
 
+var adri = 'cxPFp7DT23g:APA91bHrxr0KNfuVOUe_QvOpNoR7omQgPC0fwhIHGKLtvo7Outais8smrMb46lQuIE7ty19GIUQj7K_jo0V0Ui_KftktHoReGzJ5cj8usnIaNgfUYH7SwBBMkKaqnpmwPuAJhZTVSm2g';
+var message = new gcm.Message();
+message.addData({
+  title: 'Sida TETE',
+  body: 'bu',
+  icon: 'ic_stat_logo'
+});
+var server = new gcm.Sender(gcm_server_token);
+var regTokens = [];
+console.log(receiver);
+regTokens.push(adri);
+console.log("Adding "+adri);
+server.send(message, {registrationTokens: regTokens}, function(err, response) {
+  if (err) {
+    calls_log.log('info', "Notification to "+adri+" from "+"me"+" failed: "+err);
+  }
+  else {
+    calls_log.log('info', "Sending notification to "+"adri"+" from "+"me");
+  }
+});
 function stringToDate(_date,_format,_delimiter)
 {
             var formatLowerCase=_format.toLowerCase();
