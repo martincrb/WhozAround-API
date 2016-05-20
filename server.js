@@ -99,7 +99,7 @@ function notifyUser(sender, receiver) {
   message.addNotification({
     title: receiver.name+', we found a friend!',
     body: sender.name+' is also traveling to the same place as you!',
-    icon: 'ic_launcher'
+    icon: 'ic_stat_logo'
   });
   var server = new gcm.Sender(gcm_server_token);
   var regTokens = [];
