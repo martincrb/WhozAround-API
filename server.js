@@ -3,9 +3,12 @@ var express = require("express"),
     bodyParser  = require("body-parser"),
     methodOverride = require("method-override");
     mongoose = require('mongoose'),
+    gcm = require('node-gcm'),
     winston = require('winston');
 
 //configure logger
+var gcm_server_token = 'AIzaSyCQ8jg3NTX5MzggS18dfimxV-P6TZ1hVbc';
+
 var calls_log = new (winston.Logger)({
     transports: [
       new (winston.transports.Console)(),
@@ -23,8 +26,8 @@ var router = express.Router();
 mongoose.connect('mongodb://localhost/usersTest');
 
 var tripSchema = mongoose.Schema({
-  date_from: String,
-  date_until: String,
+  date_from: Date,
+  date_until: Date,
   city: String,
   description: String,
   image: Number,
@@ -49,6 +52,20 @@ var userSchema = mongoose.Schema({
 var User = mongoose.model('User', userSchema);
 var Trip = mongoose.model('Trip', tripSchema);
 
+function stringToDate(_date,_format,_delimiter)
+{
+            var formatLowerCase=_format.toLowerCase();
+            var formatItems=formatLowerCase.split(_delimiter);
+            var dateItems=_date.split(_delimiter);
+            var monthIndex=formatItems.indexOf("mm");
+            var dayIndex=formatItems.indexOf("dd");
+            var yearIndex=formatItems.indexOf("yyyy");
+            var month=parseInt(dateItems[monthIndex]);
+            month-=1;
+            var formatedDate = new Date(dateItems[yearIndex],month,dateItems[dayIndex]);
+            return formatedDate;
+}
+
 function getTripsByUser(fb_user) {
   Trip.find({'creator': fb_user}, function (err, trips) {
     return trips;
@@ -69,12 +86,31 @@ function notifyFriends(user, newtrip) {
           if (tripsMatch(newtrip, trips[j])) {
             notifyUser(originaluser, friends[i]);
           }
+
       }
   }
+  //Testing notifyUser
+  notifyUser(user, user);
 }
 
 function notifyUser(sender, receiver) {
-
+  var message = new gcm.Message();
+  message.addNotification({
+    title: receiver.name+', we found a friend!',
+    body: sender.name+' is also traveling to the same place as you!',
+    icon: 'ic_launcher'
+  });
+  var server = new gcm.Sender(gcm_server_token);
+  var regTokens = [];
+  regTokens.push(receiver.gcm_token);
+  server.send(message, {registrationTokens: regTokens}, function(err, response) {
+    if (err) {
+      calls_log('info', "Notification to "+receiver.name+" from "+sender.name+" failed: "+err);
+    }
+    else {
+      calls_log('info', "Sending notification to "+receiver.name+" from "+sender.name);
+    }
+  });
 }
 /*
 var me = new User({fb_username: 'martincristobal',
@@ -169,8 +205,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   */
   var trip = new Trip(
     {
-        date_from:  trip_req.date_from,
-        date_until: trip_req.date_until,
+        date_from:  stringToDate(trip_req.date_from, "mm/dd/yyy", "/"),
+        date_until: stringToDate(trip_req.date_until, "mm/dd/yyy", "/"),
         city:       trip_req.location,
         description:  trip_req.description,
         image_url: trip_req.image_url ,
@@ -189,6 +225,16 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
     calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
     response.message = "User "+trip_req.creator+" added the trip succesfully";
+
+    //Notify friends with matching trips
+    User.findOne({'fb_username' : trip_req.creator}, function (err, docs) {
+      if (err) {
+        calls_log.log('info', "MONGODB Error: " + err);
+      }
+      else {
+        notifyUser(docs, trip);
+      }
+
   });
   res.send(response);
 });
