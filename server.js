@@ -69,7 +69,7 @@ message.addData({
 });
 var server = new gcm.Sender(gcm_server_token);
 var regTokens = [];
-console.log(receiver);
+
 regTokens.push(adri);
 regTokens.push(me);
 console.log("Adding "+adri);
