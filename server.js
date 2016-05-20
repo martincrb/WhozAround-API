@@ -75,6 +75,11 @@ function stringToDate(_date,_format,_delimiter)
 
 function getTripsByUser(fb_user) {
   Trip.find({'creator': fb_user}, function (err, trips) {
+    if (err) {
+      calls_log.log('info', "Error retrieving trip "+err);
+      return;
+    }
+    console.log(trips);
     return trips;
   });
 }
