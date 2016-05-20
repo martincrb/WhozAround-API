@@ -73,14 +73,20 @@ function stringToDate(_date,_format,_delimiter)
             return formatedDate;
 }
 
-function getTripsByUser(fb_user) {
+function getTripsByUser(user, fb_user, trip) {
   Trip.find({'creator': fb_user}, function (err, trips) {
     if (err) {
       calls_log.log('info', "Error retrieving trip "+err);
       return;
     }
     console.log(trips);
-    return trips;
+    for (var j = 0; j < trips.length; ++j) {
+        if (tripsMatch(trip, trips[j].toObject())) {
+          console.log("notify user "+friends[i].name);
+          //notifyUser(user, friends[i]);
+        }
+
+    }
   });
 }
 
@@ -96,14 +102,7 @@ function notifyFriends(user, newtrip) {
   var friends = user.friends;
   console.log(friends);
   for (var i = 0; i < friends.length; ++i) {
-
-      var trips = getTripsByUser(friends[i].fb_username);
-      for (var j = 0; j < trips.length; ++j) {
-          if (tripsMatch(newtrip, trips[j].toObject())) {
-            //notifyUser(user, friends[i]);
-          }
-
-      }
+      getTripsByUser(user, friends[i].fb_username, newtrip);
   }
 
 }
