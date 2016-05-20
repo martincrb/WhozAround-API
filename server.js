@@ -253,14 +253,14 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
       response.message = "User "+trip_req.creator+" added the trip succesfully";
 
       //Notify friends with matching trips
+      console.log("Finding user "+trip_req.creator);
       User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
         if (err2) {
           calls_log.log('info', "MONGODB Error: " + err2);
         }
         else {
-
-          console.log(JSON.stringify(docs[0]));
-          notifyFriends(docs[0].toObject(), trip);
+          console.log(JSON.stringify(docs));
+          notifyFriends(docs.toObject(), trip);
         }
       });
 
