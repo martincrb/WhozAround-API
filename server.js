@@ -8,6 +8,14 @@ var express = require("express"),
 
 //configure logger
 var gcm_server_token = 'AIzaSyCQ8jg3NTX5MzggS18dfimxV-P6TZ1hVbc';
+var flickr_key = '95455618ec4f4eab692d561bbae3b516';
+var flickr_secret= '211dd2af3ebe5701';
+
+var Flickr = require("flickrapi"),
+  flickrOptions = {
+    api_key: flickr_key,
+    secret: flickr_secret
+  };
 
 var calls_log = new (winston.Logger)({
     transports: [
@@ -211,26 +219,38 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         isFb: trip_req.isFb
     }
   );
-//Add trip to DB
-  trip.save(function (err) {
-    if (err) {
-      calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
-      response.message = "Error adding trip to user "+trip_req.creator+": " + err;
-      return console.error(err);
+  //receive url image from flickr
+  flickr.photos.search({
+    text: trip.city +"+"+trip.description.replace(" ", "+");
+  },
+  function(err0, result) {
+    if(err0) {
+      console.log(err0);
+      return;
     }
-    calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
-    response.message = "User "+trip_req.creator+" added the trip succesfully";
-    //Notify friends with matching trips
-    User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
-      if (err2) {
-        calls_log.log('info', "MONGODB Error: " + err2);
-      }
-      else {
-        console.log(JSON.stringify(docs[0]));
-        notifyUser(docs[0].toObject(), docs[0].toObject());
-      }
-    });
-  });
+      console.log(result);
+      //Add trip to DB
+        trip.save(function (err) {
+          if (err) {
+            calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
+            response.message = "Error adding trip to user "+trip_req.creator+": " + err;
+            return console.error(err);
+          }
+          calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
+          response.message = "User "+trip_req.creator+" added the trip succesfully";
+          //Notify friends with matching trips
+          User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
+            if (err2) {
+              calls_log.log('info', "MONGODB Error: " + err2);
+            }
+            else {
+              console.log(JSON.stringify(docs[0]));
+              notifyUser(docs[0].toObject(), docs[0].toObject());
+            }
+          });
+        });
+    }
+
   res.send(response);
 });
 
