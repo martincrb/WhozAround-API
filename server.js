@@ -35,7 +35,7 @@ mongoose.connect('mongodb://localhost/usersTest');
 var tripSchema = mongoose.Schema({
   date_from: Date,
   date_until: Date,
-  location: String,
+  city: String,
   description: String,
   image: Number,
   image_url: String,
@@ -203,13 +203,13 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   var trip_req =req.body;
   console.log(trip_req);
   var response = {"status": "OK", "message": "Trip added succesfully"};
-  calls_log.log('info', "POST@/whozapi/v1/users/"+trip_req.creator+"/trips (" + trip_req.location+" "+trip_req.date+")");
+  calls_log.log('info', "POST@/whozapi/v1/users/"+trip_req.creator+"/trips (" + trip_req.city+" "+trip_req.date+")");
   //Parse trip data and add TRIP to database
   var trip = new Trip(
     {
         date_from:  stringToDate(trip_req.date_from, "mm/dd/yyy", "/"),
         date_until: stringToDate(trip_req.date_until, "mm/dd/yyy", "/"),
-        location:       trip_req.location,
+        city:       trip_req.city,
         description:  trip_req.description,
         image_url: trip_req.image_url ,
         image: trip_req.image,
@@ -219,8 +219,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  console.log("TAGS: "+ trip.location+",city")
-  flickr.get("photos.search", {"tags":trip.location+",city"}, function(err0, result){
+  console.log("TAGS: "+ trip.city+",city")
+  flickr.get("photos.search", {"tags":trip.city+",city"}, function(err0, result){
     if (err0) return console.error(err0);
     console.log(result.photos);
     //Build URL
