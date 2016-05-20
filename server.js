@@ -106,10 +106,10 @@ function notifyUser(sender, receiver) {
   regTokens.push(receiver.gcm_token);
   server.send(message, {registrationTokens: regTokens}, function(err, response) {
     if (err) {
-      calls_log('info', "Notification to "+receiver.name+" from "+sender.name+" failed: "+err);
+      calls_log.log('info', "Notification to "+receiver.name+" from "+sender.name+" failed: "+err);
     }
     else {
-      calls_log('info', "Sending notification to "+receiver.name+" from "+sender.name);
+      calls_log.log('info', "Sending notification to "+receiver.name+" from "+sender.name);
     }
   });
 }
