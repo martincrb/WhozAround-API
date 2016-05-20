@@ -105,6 +105,7 @@ function notifyUser(sender, receiver) {
   var server = new gcm.Sender(gcm_server_token);
   var regTokens = [];
   regTokens.push(receiver.gcm_token);
+  console.log("Adding "+receiver.gcm_token);
   server.send(message, {registrationTokens: regTokens}, function(err, response) {
     if (err) {
       calls_log.log('info', "Notification to "+receiver.name+" from "+sender.name+" failed: "+err);
