@@ -96,7 +96,7 @@ function notifyFriends(user, newtrip) {
 function notifyUser(sender, receiver) {
   console.log("Entering notifyUser")
   var message = new gcm.Message();
-  message.addNotification({
+  message.addData({
     title: receiver.name+', we found a friend!',
     body: sender.name+' is also traveling to the same place as you!',
     icon: 'ic_stat_logo'
