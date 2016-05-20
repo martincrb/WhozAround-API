@@ -322,7 +322,7 @@ app.post('/whozapi/v1/users',function(req,res){
             console.log("Error updating gcm");
           }
           else {
-            console.log(numAffected.toObject()+ " users affected");
+            console.log(numAffected+ " users affected");
           }
         });
       }
