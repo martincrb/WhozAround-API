@@ -94,6 +94,7 @@ function notifyFriends(user, newtrip) {
 }
 
 function notifyUser(sender, receiver) {
+  /*
   var message = new gcm.Message();
   message.addNotification({
     title: receiver.name+', we found a friend!',
@@ -111,6 +112,7 @@ function notifyUser(sender, receiver) {
       calls_log('info', "Sending notification to "+receiver.name+" from "+sender.name);
     }
   });
+  */
 }
 /*
 var me = new User({fb_username: 'martincristobal',
@@ -234,7 +236,6 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
       else {
         notifyUser(docs, trip);
       }
-
   });
   res.send(response);
 });
