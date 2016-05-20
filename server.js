@@ -222,7 +222,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   //receive url image from flickr
   Flickr.tokenOnly(flickrOptions, function(error, flickr) {
     flickr.photos.search({
-      text: trip.city+"+image"
+      text: trip.city+"+image",
+      tags: trip.city
     },
     function(err0, result) {
       if(err0) {
