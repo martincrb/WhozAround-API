@@ -276,6 +276,16 @@ app.post('/whozapi/v1/users',function(req,res){
       if (docs.length > 0) { //User exists
         calls_log.log('info', "User "+user.fb_username+" already in the database");
         response.message = "User "+user.fb_username+" already in the database";
+        //Update gcm token
+        var conditions = {fb_username: user.fb_username}, update={$set: {gcm_token: user.gcmToken}};
+        User.update(conditions, update, {multi: false}, function(err, numAffected) {
+          if (err) {
+            console.log("Error updating gcm");
+          }
+          else {
+            console.log(numAffected+ " users affected");
+          }
+        });
       }
       else { //User does not exist
         user.save(function (err2) {
