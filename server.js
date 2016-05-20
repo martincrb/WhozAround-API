@@ -222,14 +222,20 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   //receive url image from flickr
   Flickr.tokenOnly(flickrOptions, function(error, flickr) {
     flickr.photos.search({
-      text: trip.city +"+"+trip.description.replace(" ", "+")
+      text: trip.city;
     },
     function(err0, result) {
       if(err0) {
         console.log(err0);
         return;
       }
-        console.log(result);
+        //Build URL
+        var photo = result.photos.photo[0]; //First photo
+        //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+        var farmid = 1;
+        var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
+        trip.image_url = url;
+        console.log("URL: " +url);
         trip.save(function (err) {
           if (err) {
             calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
