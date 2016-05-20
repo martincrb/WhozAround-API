@@ -219,7 +219,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  flickr.get("photos.search", {"tags":trip.city}, function(err0, result){
+  flickr.get("photos.search", {"tags":"cat,dogs"}, function(err0, result){
     if (err0) return console.error(err0);
     console.log(result.photos);
     //Build URL
@@ -228,7 +228,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
     var photo = result.photos.photo[0]; //First photo
     //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
-    var farmid = 1;
+    var farmid = photo.farm;
     var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
     trip.image_url = url;
     console.log("URL: " +url);
