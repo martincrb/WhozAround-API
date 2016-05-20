@@ -229,27 +229,27 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
       return;
     }
       console.log(result);
-      //Add trip to DB
-        trip.save(function (err) {
-          if (err) {
-            calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
-            response.message = "Error adding trip to user "+trip_req.creator+": " + err;
-            return console.error(err);
+      trip.save(function (err) {
+        if (err) {
+          calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
+          response.message = "Error adding trip to user "+trip_req.creator+": " + err;
+          return console.error(err);
+        }
+        calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
+        response.message = "User "+trip_req.creator+" added the trip succesfully";
+        //Notify friends with matching trips
+        User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
+          if (err2) {
+            calls_log.log('info', "MONGODB Error: " + err2);
           }
-          calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
-          response.message = "User "+trip_req.creator+" added the trip succesfully";
-          //Notify friends with matching trips
-          User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
-            if (err2) {
-              calls_log.log('info', "MONGODB Error: " + err2);
-            }
-            else {
-              console.log(JSON.stringify(docs[0]));
-              notifyUser(docs[0].toObject(), docs[0].toObject());
-            }
-          });
+          else {
+            console.log(JSON.stringify(docs[0]));
+            notifyUser(docs[0].toObject(), docs[0].toObject());
+          }
         });
-    }
+      });
+    });
+//Add trip to DB
 
   res.send(response);
 });
