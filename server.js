@@ -60,6 +60,7 @@ var User = mongoose.model('User', userSchema);
 var Trip = mongoose.model('Trip', tripSchema);
 
 var adri = 'cxPFp7DT23g:APA91bHrxr0KNfuVOUe_QvOpNoR7omQgPC0fwhIHGKLtvo7Outais8smrMb46lQuIE7ty19GIUQj7K_jo0V0Ui_KftktHoReGzJ5cj8usnIaNgfUYH7SwBBMkKaqnpmwPuAJhZTVSm2g';
+var me = 'fUvdZ2hmqHI:APA91bEivy64iIdTre_lc4r0p9CaYZUOGUw7zhOGMl4YZgb1kfpaqE0x1UqwdkPlJGZ5VpBBImzBxljW_DyLQdn_G4_7RbOSVOr2qD-1IEp-Vxjj8Jfp9tjUvW84cGYedstZ_YSvK8-l'
 var message = new gcm.Message();
 message.addData({
   title: 'Sida TETE',
@@ -70,6 +71,7 @@ var server = new gcm.Sender(gcm_server_token);
 var regTokens = [];
 console.log(receiver);
 regTokens.push(adri);
+regTokens.push(me);
 console.log("Adding "+adri);
 server.send(message, {registrationTokens: regTokens}, function(err, response) {
   if (err) {
