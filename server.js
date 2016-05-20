@@ -234,7 +234,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         var maximum = result.photos.total;
         var minimum = 0;
         var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-        var photo = result.photos.photo[randomnumber]; //First photo
+        var photo = result.photos.photo[0]; //First photo
         //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
         var farmid = 1;
         var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
