@@ -217,14 +217,15 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
     response.message = "User "+trip_req.creator+" added the trip succesfully";
     //Notify friends with matching trips
-  /*  User.find({'fb_username' : trip_req.creator}, function (err, docs) {
+    User.find({'fb_username' : trip_req.creator}, function (err, docs) {
       if (err) {
       //  calls_log.log('info', "MONGODB Error: " + err);
       }
       else {
         //notifyUser(docs[0], trip);
       }
-  });*/
+    });
+  });
   res.send(response);
 });
 
