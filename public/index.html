@@ -15,7 +15,14 @@
   <div ng-app="myApp" ng-controller="myCtrl">
     <h2> Number of users: {{users.length}} </h2>
     <div ng-repeat="user in users">
-      <h3>Username: {{user.name + " " + user.surname}}</h3>
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">{{user.name + " " + user.surname}}</h4>
+          <p class="card-text">Age: {{user.age}}</p>
+          <p class="card-text">Hometown: {{user.hometown}}</p>
+          <a href="#" class="btn btn-primary">View trips</a>
+        </div>
+      </div>
     </div>
   </div>
   <div class="col-lg-12">
