@@ -92,8 +92,8 @@ function getTripsByUser(user, fb_user, trip) {
 }
 
 function tripsMatch(trip1, trip2) {
-  var dateMatch = stringToDate(trip1.date_from, "dd/mm/yyy") <= stringToDate(trip2.date_until, "dd/mm/yyy") &&
-    stringToDate(trip1.date_until, "dd/mm/yyy") >= stringToDate(trip2.date_from, "dd/mm/yyy");
+  var dateMatch = stringToDate(trip1.date_from, "dd/mm/yyy", "/") <= stringToDate(trip2.date_until, "dd/mm/yyy", "/") &&
+    stringToDate(trip1.date_until, "dd/mm/yyy", "/") >= stringToDate(trip2.date_from, "dd/mm/yyy", "/");
   var placeMatch = trip1.city == trip2.city;
   return dateMatch && placeMatch;
 }
