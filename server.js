@@ -74,7 +74,7 @@ function stringToDate(_date,_format,_delimiter)
 }
 
 function getTripsByUser(user, fb_user, trip) {
-  console.log("Checking trips of"+ fb_user);
+  console.log("Checking trips of "+ fb_user);
   Trip.find({'creator': fb_user}, function (err, trips) {
     if (err) {
       calls_log.log('info', "Error retrieving trip "+err);
@@ -103,7 +103,7 @@ function notifyFriends(user, newtrip) {
   var friends = user.friends;
   console.log(friends);
   for (var i = 0; i < friends.length; ++i) {
-      getTripsByUser(user, friends[i].fb_username, newtrip);
+      getTripsByUser(user, friends[i], newtrip);
   }
 
 }
@@ -223,7 +223,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   var trip = new Trip(
     {
         date_from:  trip_req.date_from,
-        date_until: trip_req.date_until, 
+        date_until: trip_req.date_until,
         city:       trip_req.city,
         description:  trip_req.description,
         image_url: trip_req.image_url ,
