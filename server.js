@@ -248,17 +248,18 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
     trip.image_url = url;
     console.log("URL: " +url);
-    trip.save(function (err) {
+    var returnId = -1;
+    trip.save(function (err, t) {
       if (err) {
         calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
         response.message = "Error adding trip to user "+trip_req.creator+": " + err;
         return console.error(err);
       }
+      returnId = t.id;
       calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
       response.message = "User "+trip_req.creator+" added the trip succesfully";
 
       //Notify friends with matching trips
-      console.log("Finding user "+trip_req.creator);
       User.find({'fb_username' : trip_req.creator}, function (err2, docs) {
         if (err2) {
           calls_log.log('info', "MONGODB Error: " + err2);
@@ -272,7 +273,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
 
     });
   });
-  res.send(response);
+  console.log("Returning "+returnId);
+  res.send({"id":returnId});
 });
 
 //Get friends of the user with id :id
