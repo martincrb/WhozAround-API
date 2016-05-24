@@ -218,6 +218,33 @@ router.get('/whozapi/v1/users/:username/trips', function(req, res) {
   });
 });
 
+//Get trip with id ID
+router.get('/whozapi/v1/trips/:id', function(req, res) {
+  calls_log.log('info', "GET@/whozapi/v1/trips/"+req.params.id);
+  Trip.findOne({'_id': req.params.id}, function (err, docs) {
+    if (err) {
+      calls_log.log('info', "Something happened retrieving the trip. Error: "+err);
+      res.send(err);
+    }
+    calls_log.log('info', "Retrieving trip ");
+    /*
+    docs.forEach(function(tr) {
+      console.log("Trip ------------------------------------------");
+      console.log(tr.city);
+      console.log(tr.date_from);
+      console.log(tr.date_until);
+      console.log(tr.description);
+      console.log(tr.image);
+      console.log(tr.image_url);
+      console.log(tr.creator);
+      console.log(tr.title);
+      console.log(tr.isFb);
+    });
+    */
+    res.json(docs);
+
+  });
+});
 //Create a trip for the user with id :id
 router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   var trip_req =req.body;
