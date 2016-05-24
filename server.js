@@ -274,6 +274,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         else {
           console.log(JSON.stringify(docs[0]));
           notifyFriends(docs[0], trip);
+          console.log("Exiting notifyFriends");
         }
       });
 
