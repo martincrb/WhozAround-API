@@ -268,13 +268,13 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   //receive url image from flickr
   var returnId = -1;
   console.log("TAGS: "+ trip.city+",city,landscape,monument,building,famous,"+trip.description.replace(" ", ","));
-  flickr.get("photos.search", {"tags":trip.city+",city,landscape,monument,building,famous,"+trip.description.replace(" ", ","),
+  flickr.get("photos.search", {"tags":trip.city+",city,landscape,building",
               "tag_mode": "all"}, function(err0, result){
    if (err0) {
      console.error(err0);
      return;
     }
-  //  console.log(result.photos);
+    console.log(result.photos);
     //Build URL
     console.log("Building image url");
     var maximum = result.photos.total - 1;
