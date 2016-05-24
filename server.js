@@ -267,20 +267,20 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   );
   //receive url image from flickr
   console.log("TAGS: "+ trip.city+",city,landscape,monument")
-//  flickr.get("photos.search", {"tags":trip.city+",city", "tag_mode": "all"}, function(err0, result){
-/*    if (err0) return console.error(err0);
-    console.log(result.photos);
+  flickr.get("photos.search", {"tags":trip.city+",city", "tag_mode": "all"}, function(err0, result){
+   if (err0) return console.error(err0);
+  //  console.log(result.photos);
     //Build URL
-    var maximum = result.photos.total;
+    var maximum = result.photos.total - 1;
     var minimum = 0;
     var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-    var photo = result.photos.photo[0]; //First photo
+    var photo = result.photos.photo[randomnumber]; //First photo
     //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
     var farmid = photo.farm;
     var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
     trip.image_url = url;
     console.log("URL: " +url);
-    */
+
     var returnId = -1;
     trip.save(function (err, t) {
       if (err) {
@@ -306,7 +306,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         }
       });
     });
-//  });
+  });
   console.log("Returning "+returnId);
   res.send(trip);
 });
