@@ -267,8 +267,9 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   );
   //receive url image from flickr
   var returnId = -1;
-  console.log("TAGS: "+ trip.city+",city,landscape,monument,building,architechture,people,famous")
-  flickr.get("photos.search", {"tags":trip.city+",city", "tag_mode": "all"}, function(err0, result){
+  console.log("TAGS: "+ trip.city+",city,landscape,monument,building,architechture,people,famous,"+trip.description.replace(" ", ","));
+  flickr.get("photos.search", {"tags":trip.city+",city,landscape,monument,building,architechture,people,famous,"+trip.description.replace(" ", ","),
+              "tag_mode": "all"}, function(err0, result){
    if (err0) {
      console.error(err0);
      return;
@@ -278,7 +279,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     var maximum = result.photos.total - 1;
     var minimum = 0;
     var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-    var photo = result.photos.photo[randomnumber]; //First photo
+    var photo = result.photos.photo[0]; //First photo
     //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
     console.log(photo);
     var farmid = photo.farm;
