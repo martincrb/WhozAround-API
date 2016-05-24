@@ -90,6 +90,7 @@ function getTripsByUser(user, fb_user, trip) {
 
     }
     console.log("out of for trips");
+    return;
   });
 }
 
