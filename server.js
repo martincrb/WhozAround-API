@@ -240,8 +240,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   );
   //receive url image from flickr
   console.log("TAGS: "+ trip.city+",city,landscape,monument")
-  flickr.get("photos.search", {"tags":trip.city+",city", "tag_mode": "all"}, function(err0, result){
-    if (err0) return console.error(err0);
+//  flickr.get("photos.search", {"tags":trip.city+",city", "tag_mode": "all"}, function(err0, result){
+/*    if (err0) return console.error(err0);
     console.log(result.photos);
     //Build URL
     var maximum = result.photos.total;
@@ -253,6 +253,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     var url = "https://farm"+farmid+".staticflickr.com/"+photo.server+"/"+photo.id+"_"+photo.secret+".jpg";
     trip.image_url = url;
     console.log("URL: " +url);
+    */
     var returnId = -1;
     trip.save(function (err, t) {
       if (err) {
@@ -277,10 +278,8 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
           console.log("Exiting notifyFriends");
         }
       });
-
-
     });
-  });
+//  });
   console.log("Returning "+returnId);
   res.send(trip);
 });
