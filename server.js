@@ -256,7 +256,7 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
         return console.error(err);
       }
       returnId = t.id;
-      console.log("Trip id: " returnId);
+      console.log("Trip id: " + returnId);
       calls_log.log('info', "User "+trip_req.creator+" added a new TRIP from "+trip_req.date+" to "+trip_req.date2+" successfully" );
       response.message = "User "+trip_req.creator+" added the trip succesfully";
 
