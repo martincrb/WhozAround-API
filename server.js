@@ -82,6 +82,7 @@ function getTripsByUser(user, fb_user, trip) {
     }
     console.log(trips);
     for (var j = 0; j < trips.length; ++j) {
+        console.log("for trips");
         if (tripsMatch(trip, trips[j].toObject())) {
           console.log("notify user "+fb_user);
           notifyUser(user, fb_user);
