@@ -89,6 +89,7 @@ function getTripsByUser(user, fb_user, trip) {
         }
 
     }
+    console.log("out of for trips");
   });
 }
 
@@ -106,7 +107,6 @@ function notifyFriends(user, newtrip) {
   for (var i = 0; i < friends.length; ++i) {
       getTripsByUser(user, friends[i], newtrip);
   }
-
 }
 
 function notifyUser(sender, receiver) {
