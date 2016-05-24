@@ -80,7 +80,7 @@ function getTripsByUser(user, fb_user, trip) {
       calls_log.log('info', "Error retrieving trip "+err);
       return;
     }
-    console.log(trips);
+    if (trips.length <= 0) return;
     for (var j = 0; j < trips.length; ++j) {
         console.log("for trips");
         if (tripsMatch(trip, trips[j].toObject())) {
@@ -137,7 +137,6 @@ function notifyUser(sender, receiver) {
       else {
         calls_log.log('info', "Sending notification to "+user2.name+" from "+sender.name);
       }
-      return;
     });
 
   });
