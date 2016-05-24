@@ -266,9 +266,13 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     }
   );
   //receive url image from flickr
-  console.log("TAGS: "+ trip.city+",city,landscape,monument")
+  var returnId = -1;
+  console.log("TAGS: "+ trip.city+",city,landscape,monument,building,architechture,people,famous")
   flickr.get("photos.search", {"tags":trip.city+",city", "tag_mode": "all"}, function(err0, result){
-   if (err0) return console.error(err0);
+   if (err0) {
+     console.error(err0);
+     return;
+    }
   //  console.log(result.photos);
     //Build URL
     var maximum = result.photos.total - 1;
@@ -282,7 +286,6 @@ router.post('/whozapi/v1/users/:id/trips', function(req, res) {
     trip.image_url = url;
     console.log("URL: " +url);
 
-    var returnId = -1;
     trip.save(function (err, t) {
       if (err) {
         calls_log.log('info', "Error adding trip to user "+trip_req.creator+": " + err);
