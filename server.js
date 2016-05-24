@@ -108,8 +108,9 @@ function notifyFriends(user, newtrip) {
   console.log(friends);
   for (var i = 0; i < friends.length; ++i) {
       getTripsByUser(user, friends[i], newtrip);
-      console.log("out tripsbyuser");
   }
+  console.log("returning from notifyFriends");
+  return;
 }
 
 function notifyUser(sender, receiver) {
