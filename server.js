@@ -153,6 +153,9 @@ var me = new User({fb_username: 'martincristobal',
 //  if (err) return console.error(err);
 //});
 
+router.get('/', function(req, res) {
+   res.sendFile('/public/webpage/index.html' , {"root": __dirname});
+});
 
 router.get('/admin', function(req, res) {
    res.sendFile('/public/index.html' , {"root": __dirname});
@@ -245,6 +248,51 @@ router.get('/whozapi/v1/trips/:id', function(req, res) {
 
   });
 });
+
+//Get friends matching user and tripid
+router.get('/whozapi/v1/trips/:user/:id', function(req, res) {
+  var userid = req.params.user;
+  var tripid = req.params.id;
+  //Get friends of user
+  User.findOne({'fb_username' : req.params.user}, function (err, docs) {
+    if (err) {
+      //
+    }
+    var friends = docs.toObject().friends;
+    //Once friends retrieved, get trip information
+    Trip.findOne({'_id': req.params.id}, function (err, docs) {
+      if (err) {
+        res.send(err);
+      }
+      var date_from = docs.toObject().date_from;
+      var date_until = docs.toObject().date_until;
+      var city = docs.toObject().city;
+      //Find trips created by one of my friends such that
+      //trip1.date_from <= trip2.date_until &&
+      //trip1.date_until >= trip2.date_from && trip1.city == trip2.city;
+      Trips.find({
+            $and: [
+              {'creator':     {$in : friends}},
+              {'date_from':   {$leq : date_until}},
+              {'date_until':  {$geq : date_from}},
+              {'city':        city},
+            ]
+            },
+            'creator', //Projection (only the creator)
+            function(err, docs) {
+              //filter repeateds
+              var unique_friends = docs.filter(function(elem, index, self) {
+                return index == self.indexOf(elem);
+              });
+              res.send(unique_friends);
+      });
+    });
+
+  });
+
+});
+
+
 //Create a trip for the user with id :id
 router.post('/whozapi/v1/users/:id/trips', function(req, res) {
   var trip_req =req.body;
